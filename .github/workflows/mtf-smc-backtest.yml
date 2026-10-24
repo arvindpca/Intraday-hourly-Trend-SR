@@ -1,0 +1,60 @@
+name: Run Intraday MTF + SMC Backtest (5m/15m)
+
+on:
+  workflow_dispatch:
+    inputs:
+      cost:
+        description: "Round-trip cost % (default 0.1)"
+        default: "0.1"
+      min_trades:
+        description: "Ranking ke liye kam se kam trades"
+        default: "40"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: backtest-results
+  cancel-in-progress: false
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Run intraday backtest
+        run: |
+          python backtest_intraday_mtf_smc.py \
+            --cost "${{ inputs.cost }}" \
+            --min-trades "${{ inputs.min_trades }}" | tee intraday_output.txt
+
+      - name: Save results to repo
+        run: |
+          RUN_DIR="results/mtf_smc_$(date -u +%Y-%m-%d_%H%M)"
+          mkdir -p "$RUN_DIR"
+          mv mtf_smc_results.csv mtf_smc_best_trades.csv intraday_output.txt "$RUN_DIR"/
+          cp "$RUN_DIR"/intraday_output.txt results/LATEST_MTF_SMC.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add results
+          git commit -m "MTF SMC backtest results $(date -u +%Y-%m-%d)"
+          git pull --rebase origin main
+          git push
+
+      - name: Show summary
+        if: always()
+        run: |
+          if [ -f results/LATEST_MTF_SMC.txt ]; then
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            tail -n 80 results/LATEST_MTF_SMC.txt >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi

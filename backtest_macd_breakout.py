@@ -249,6 +249,20 @@ def stats(trades):
     )
 
 
+def market_regimes():
+    """Nifty 50 trend filters. Signal din ka Nifty close check hota hai."""
+    raw = yf.download("^NSEI", period="2y", interval="1d", auto_adjust=True, progress=False)
+    c = raw["Close"]
+    if isinstance(c, pd.DataFrame):
+        c = c.iloc[:, 0]
+    c = c.dropna()
+    return {
+        "No filter": None,
+        "Nifty > 50 EMA": c > c.ewm(span=50, adjust=False).mean(),
+        "Nifty > 200 SMA": c > c.rolling(200).mean(),
+    }
+
+
 # --------------------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser()
@@ -267,51 +281,72 @@ def main():
     data = download(symbols)
     print(f"   {len(data)} stocks ka data mila")
 
-    print("3) Indicators + signals ...")
+    print("3) Nifty 50 market filter ...")
+    regimes = market_regimes()
+
+    print("4) Indicators + signals ...")
     prepared = {}
     all_dates = sorted(set().union(*[d.index for d in data.values()]))
     test_start_date = all_dates[-args.days] if len(all_dates) >= args.days else all_dates[0]
-    total_signals = 0
     for s, d in data.items():
         d = add_indicators(d)
+        d["base_signal"] = d["signal"]
         idx = int(np.searchsorted(d.index, test_start_date))
         prepared[s] = (d, idx)
-        total_signals += int(d["signal"].iloc[idx:].sum())
     print(f"   test period: {pd.Timestamp(test_start_date).date()} se {pd.Timestamp(all_dates[-1]).date()}")
-    print(f"   total signals: {total_signals}")
-    if total_signals == 0:
-        sys.exit("Koi signal nahi mila. CFG me vol_mult ya RSI range relax karke dobara chalao.")
 
-    print("4) SL x TP x MaxHold combinations test ...")
+    pd.set_option("display.width", 220)
+    pd.set_option("display.max_columns", 20)
+    print("5) Har market filter ke saath SL x TP x MaxHold test ...")
     rows, all_trades = [], {}
-    for sl_opt, tp_opt, mh in itertools.product(SL_OPTIONS, TP_OPTIONS, MAX_HOLD_OPTIONS):
-        trades = []
+    for fname, regime in regimes.items():
+        total_signals = 0
         for s, (d, idx) in prepared.items():
-            trades += simulate(s, d, idx, sl_opt, tp_opt, mh, cost)
-        key = (sl_opt[0], tp_opt[0], mh)
-        all_trades[key] = trades
-        rows.append(dict(SL=sl_opt[0], TP=tp_opt[0], max_hold=mh, **stats(trades)))
+            if regime is None:
+                d["signal"] = d["base_signal"]
+            else:
+                ok_mkt = regime.reindex(d.index).ffill().fillna(False).astype(bool)
+                d["signal"] = d["base_signal"] & ok_mkt
+            total_signals += int(d["signal"].iloc[idx:].sum())
+        print(f"   [{fname}] signals: {total_signals}")
+        for sl_opt, tp_opt, mh in itertools.product(SL_OPTIONS, TP_OPTIONS, MAX_HOLD_OPTIONS):
+            trades = []
+            for s, (d, idx) in prepared.items():
+                trades += simulate(s, d, idx, sl_opt, tp_opt, mh, cost)
+            key = (fname, sl_opt[0], tp_opt[0], mh)
+            all_trades[key] = trades
+            rows.append(dict(filter=fname, SL=sl_opt[0], TP=tp_opt[0], max_hold=mh, **stats(trades)))
 
     res = pd.DataFrame(rows)
     res.to_csv("sl_tp_results.csv", index=False)
 
-    ok = res[res["trades"] >= args.min_trades].copy()
-    if ok.empty:
-        ok = res[res["trades"] > 0].copy()
-        print(f"   (warning: kisi combo me {args.min_trades}+ trades nahi - result kam reliable)")
-    ok = ok.sort_values(["avg_ret", "profit_factor"], ascending=False)
+    summary, bests = [], []
+    for fname in regimes:
+        sub = res[(res["filter"] == fname) & (res["trades"] >= args.min_trades)]
+        if sub.empty:
+            sub = res[(res["filter"] == fname) & (res["trades"] > 0)]
+        if sub.empty:
+            print(f"\n[{fname}] koi trade nahi")
+            continue
+        sub = sub.sort_values(["avg_ret", "profit_factor"], ascending=False)
+        print(f"\n================ FILTER: {fname} - TOP 5 ================")
+        print(sub.head(5).drop(columns=["filter"]).to_string(index=False))
+        b = sub.iloc[0]
+        bests.append(b)
+        summary.append(dict(filter=fname, profitable_combos=f"{int((res[res['filter']==fname]['avg_ret']>0).sum())}/{len(res[res['filter']==fname])}",
+                            best_SL=b["SL"], best_TP=b["TP"], max_hold=b["max_hold"], trades=b["trades"],
+                            win_rate=b["win_rate"], avg_ret=b["avg_ret"], profit_factor=b["profit_factor"],
+                            max_dd_sum=b["max_dd_sum"]))
 
-    pd.set_option("display.width", 200)
-    pd.set_option("display.max_columns", 20)
-    print("\n================ TOP 10 SL/TP COMBINATIONS (avg return per trade ke hisaab se) ================")
-    print(ok.head(10).to_string(index=False))
+    print("\n================ COMPARISON (har filter ka best combo) ================")
+    print(pd.DataFrame(summary).to_string(index=False))
 
-    best = ok.iloc[0]
-    key = (best["SL"], best["TP"], best["max_hold"])
+    best = max(bests, key=lambda b: (b["avg_ret"], b["profit_factor"]))
+    key = (best["filter"], best["SL"], best["TP"], best["max_hold"])
     pd.DataFrame(all_trades[key]).sort_values("entry_date").to_csv("best_combo_trades.csv", index=False)
 
-    print("\n================ BEST ================")
-    print(f"SL: {best['SL']} | TP: {best['TP']} | Max hold: {best['max_hold']} din")
+    print("\n================ OVERALL BEST ================")
+    print(f"Filter: {best['filter']} | SL: {best['SL']} | TP: {best['TP']} | Max hold: {best['max_hold']} din")
     print(f"Trades: {best['trades']} | Win rate: {best['win_rate']}% | Avg/trade: {best['avg_ret']}% "
           f"| Profit factor: {best['profit_factor']} | Max DD (sum %): {best['max_dd_sum']}")
     print("\nFiles: sl_tp_results.csv (saare combos), best_combo_trades.csv (best combo ke trades)")

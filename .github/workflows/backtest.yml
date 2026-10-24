@@ -1,0 +1,59 @@
+name: Run Backtest
+
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Kitne trading din pe test (default 180)"
+        default: "180"
+      cost:
+        description: "Round-trip cost % (default 0.2)"
+        default: "0.2"
+      min_trades:
+        description: "Ranking ke liye kam se kam trades"
+        default: "15"
+
+permissions:
+  contents: write
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Run backtest
+        run: |
+          python backtest_macd_breakout.py \
+            --days "${{ inputs.days }}" \
+            --cost "${{ inputs.cost }}" \
+            --min-trades "${{ inputs.min_trades }}" | tee backtest_output.txt
+
+      - name: Save results to repo
+        run: |
+          RUN_DIR="results/$(date -u +%Y-%m-%d_%H%M)"
+          mkdir -p "$RUN_DIR"
+          mv sl_tp_results.csv best_combo_trades.csv backtest_output.txt "$RUN_DIR"/
+          cp "$RUN_DIR"/backtest_output.txt results/LATEST.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add results
+          git commit -m "Backtest results $(date -u +%Y-%m-%d)"
+          git push
+
+      - name: Show summary
+        if: always()
+        run: |
+          if [ -f results/LATEST.txt ]; then
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            tail -n 25 results/LATEST.txt >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi

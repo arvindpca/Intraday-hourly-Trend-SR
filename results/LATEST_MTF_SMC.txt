@@ -1,0 +1,160 @@
+1) Nifty 500 list ...
+2) 5-min data download (60 din) ...
+  downloading 1-40 / 501 ...
+  downloading 41-80 / 501 ...
+  downloading 81-120 / 501 ...
+  downloading 121-160 / 501 ...
+  downloading 161-200 / 501 ...
+  downloading 201-240 / 501 ...
+  downloading 241-280 / 501 ...
+  downloading 281-320 / 501 ...
+  downloading 321-360 / 501 ...
+  downloading 361-400 / 501 ...
+  downloading 401-440 / 501 ...
+  downloading 441-480 / 501 ...
+  downloading 481-501 / 501 ...
+   496 stocks ka data mila
+   test period: 2026-08-12 se 2026-10-23 (50 din)
+3) Signals ...
+   5m signals:
+                    total     ON  STRICT
+strategy      side                      
+ORB           -1     3292   1380    1122
+               1     4083    712     181
+SMC_FVG       -1    13242   4890    3801
+               1    10418   1795     629
+SMC_SWEEP     -1     8829   2244    1730
+               1    11752   1540     554
+VWAP_PULLBACK -1    37462  12171    9466
+               1    33160   5132    1875
+   15m signals:
+                    total    ON  STRICT
+strategy      side                     
+ORB           -1     2285  1013     853
+               1     2995   581     151
+SMC_FVG       -1     1950   829     695
+               1     1219   221      76
+SMC_SWEEP     -1     1776   401     320
+               1     2458   332     114
+VWAP_PULLBACK -1    22383  7573    5979
+               1    19645  3430    1382
+4) Backtest combos ...
+
+================ TOP 20 (kam se kam 40 trades) ================
+     strategy  tf filter  side        SL        TP  trades  win_rate  avg_ret  profit_factor  total_sum  max_dd_sum  first_half_avg  second_half_avg
+          ORB  5m    OFF Short Structure        3R    2958      44.1    0.005           1.01       13.5      -143.8          -0.054            0.064
+VWAP_PULLBACK 15m    OFF Short    1x ATR 3:15 exit   11298      36.2    0.004           1.01       42.9      -440.8          -0.040            0.048
+          ORB  5m    OFF Short Structure      1.5R    2958      48.2    0.001           1.00        2.1      -142.9          -0.052            0.053
+          ORB  5m    OFF Short Structure        2R    2958      45.6   -0.000           1.00       -1.1      -158.8          -0.063            0.063
+VWAP_PULLBACK 15m    OFF Short Structure 3:15 exit   10033      34.3   -0.005           0.99      -45.7      -503.7          -0.062            0.049
+VWAP_PULLBACK 15m    OFF Short    1x ATR        3R   11669      37.4   -0.005           0.99      -56.4      -493.1          -0.050            0.041
+          ORB  5m    OFF Short Structure 3:15 exit    2958      43.5   -0.005           0.99      -14.3      -171.8          -0.058            0.049
+          ORB 15m    OFF Short    1x ATR        3R    2075      37.7   -0.006           0.99      -11.8      -136.1          -0.047            0.034
+          ORB  5m     ON Short Structure      1.5R    1297      47.4   -0.007           0.98       -8.5      -119.3          -0.093            0.075
+VWAP_PULLBACK 15m    OFF Short Structure        3R   10398      37.0   -0.011           0.97     -111.3      -546.2          -0.074            0.047
+          ORB  5m     ON Short Structure        2R    1297      44.8   -0.012           0.97      -16.2      -122.2          -0.086            0.057
+          ORB 15m    OFF Short    1x ATR 3:15 exit    2075      36.0   -0.012           0.97      -25.6      -173.6          -0.031            0.005
+          ORB  5m     ON Short Structure        3R    1297      43.1   -0.013           0.97      -17.0      -126.4          -0.078            0.048
+VWAP_PULLBACK 15m     ON Short    1x ATR 3:15 exit    5001      35.1   -0.014           0.96      -70.6      -381.1          -0.080            0.055
+VWAP_PULLBACK 15m     ON Short    1x ATR        3R    5094      36.3   -0.015           0.96      -75.3      -395.3          -0.092            0.066
+          ORB 15m    OFF Short Structure        3R    2016      45.2   -0.019           0.96      -39.0      -176.6          -0.090            0.049
+          ORB 15m    OFF Short Structure        2R    2016      46.4   -0.020           0.96      -39.7      -172.4          -0.103            0.060
+          ORB  5m     ON Short Structure 3:15 exit    1297      42.4   -0.020           0.95      -26.4      -139.6          -0.074            0.031
+          ORB 15m     ON Short    1x ATR        3R     957      36.2   -0.020           0.95      -19.4       -90.8          -0.113            0.067
+VWAP_PULLBACK 15m     ON Short Structure        3R    4252      36.8   -0.023           0.94      -97.2      -403.4          -0.127            0.072
+
+================ HAR SETUP KA BEST (Buy+Short alag) ================
+     strategy  tf filter      side        SL        TP  trades  win_rate  avg_ret  profit_factor  total_sum  max_dd_sum  first_half_avg  second_half_avg
+          ORB 15m     ON       Buy    1x ATR        3R     492      32.7   -0.041           0.91      -20.0       -33.6          -0.109            0.031
+          ORB 15m     ON Buy+Short    1x ATR        3R    1449      35.0   -0.027           0.93      -39.4      -114.6          -0.111            0.056
+          ORB 15m    OFF     Short    1x ATR        3R    2075      37.7   -0.006           0.99      -11.8      -136.1          -0.047            0.034
+          ORB  5m     ON       Buy    1x ATR        3R     573      27.9   -0.069           0.82      -39.5       -45.0          -0.014           -0.128
+          ORB  5m STRICT Buy+Short    1x ATR        2R     983      36.9   -0.037           0.87      -36.0       -84.5          -0.064           -0.014
+          ORB  5m    OFF     Short Structure        3R    2958      44.1    0.005           1.01       13.5      -143.8          -0.054            0.064
+      SMC_FVG 15m     ON       Buy    1x ATR 3:15 exit     168      32.7   -0.081           0.76      -13.7       -18.5           0.000           -0.157
+      SMC_FVG 15m     ON Buy+Short    1x ATR      1.5R     932      42.6   -0.077           0.72      -71.5       -72.4          -0.050           -0.096
+      SMC_FVG 15m    OFF     Short    1x ATR      1.5R    1638      44.4   -0.058           0.79      -94.9       -95.7          -0.056           -0.059
+      SMC_FVG  5m    OFF       Buy    1x ATR      1.5R    5653      40.4   -0.098           0.60     -555.5      -564.9          -0.081           -0.112
+      SMC_FVG  5m    OFF Buy+Short    1x ATR      1.5R   12572      43.1   -0.076           0.67     -959.4      -959.9          -0.070           -0.081
+      SMC_FVG  5m    OFF     Short Structure        2R    7135      41.4   -0.053           0.83     -379.7      -403.9          -0.059           -0.049
+    SMC_SWEEP 15m    OFF       Buy Structure      1.5R    1292      37.9   -0.093           0.67     -119.7      -133.9          -0.116           -0.075
+    SMC_SWEEP 15m    OFF Buy+Short Structure        2R    2325      35.7   -0.082           0.72     -190.7      -204.8          -0.093           -0.073
+    SMC_SWEEP 15m    OFF     Short Structure        3R    1035      35.6   -0.066           0.77      -68.5       -68.7          -0.064           -0.068
+    SMC_SWEEP  5m    OFF       Buy    1x ATR 3:15 exit    5033      19.3   -0.105           0.67     -527.7      -590.1          -0.063           -0.138
+    SMC_SWEEP  5m    OFF Buy+Short    1x ATR 3:15 exit    8720      22.2   -0.082           0.73     -719.1      -790.0          -0.057           -0.102
+    SMC_SWEEP  5m    OFF     Short    1x ATR 3:15 exit    3687      26.1   -0.052           0.82     -191.4      -219.6          -0.050           -0.054
+VWAP_PULLBACK 15m     ON       Buy Structure        3R    1531      29.4   -0.120           0.73     -184.3      -194.6          -0.054           -0.172
+VWAP_PULLBACK 15m     ON Buy+Short    1x ATR 3:15 exit    6796      33.1   -0.042           0.89     -285.4      -518.9          -0.076           -0.009
+VWAP_PULLBACK 15m    OFF     Short    1x ATR 3:15 exit   11298      36.2    0.004           1.01       42.9      -440.8          -0.040            0.048
+VWAP_PULLBACK  5m STRICT       Buy    1x ATR        3R     340      26.5   -0.091           0.72      -30.8       -35.1             NaN           -0.091
+VWAP_PULLBACK  5m STRICT Buy+Short    1x ATR 3:15 exit    5191      21.9   -0.061           0.81     -316.0      -431.5          -0.040           -0.079
+VWAP_PULLBACK  5m    OFF     Short    1x ATR 3:15 exit   13833      23.6   -0.037           0.89     -505.8      -854.5          -0.036           -0.037
+
+================ FILTER ON vs OFF (har setup ka average, saare SL/TP combos) ================
+filter                         OFF     ON  STRICT
+strategy      tf  side                           
+ORB           15m Buy       -0.139 -0.059  -0.247
+                  Buy+Short -0.088 -0.060  -0.102
+                  Short     -0.023 -0.061  -0.092
+              5m  Buy       -0.127 -0.122  -0.299
+                  Buy+Short -0.079 -0.055  -0.054
+                  Short     -0.019 -0.023  -0.035
+SMC_FVG       15m Buy       -0.140 -0.134  -0.237
+                  Buy+Short -0.099 -0.108  -0.116
+                  Short     -0.073 -0.102  -0.111
+              5m  Buy       -0.115 -0.126  -0.150
+                  Buy+Short -0.085 -0.093  -0.099
+                  Short     -0.061 -0.082  -0.096
+SMC_SWEEP     15m Buy       -0.100 -0.126  -0.106
+                  Buy+Short -0.090 -0.121  -0.124
+                  Short     -0.077 -0.117  -0.126
+              5m  Buy       -0.130 -0.138  -0.191
+                  Buy+Short -0.103 -0.101  -0.104
+                  Short     -0.070 -0.078  -0.095
+VWAP_PULLBACK 15m Buy       -0.128 -0.133  -0.240
+                  Buy+Short -0.070 -0.059  -0.071
+                  Short     -0.020 -0.032  -0.060
+              5m  Buy       -0.122 -0.127  -0.142
+                  Buy+Short -0.091 -0.094  -0.079
+                  Short     -0.064 -0.083  -0.074
+
+================ OVERALL BEST ================
+ORB | 5m | Filter OFF | Short | SL Structure | TP 3R
+Trades 2958 | Win 44.1% | Avg 0.005% | PF 1.01 | 1st half avg -0.054% | 2nd half avg 0.064%
+
+Entry ghante ke hisaab se:
+      trades   avg  total
+hour                     
+9       1195  0.04  51.16
+10       741  0.02  18.00
+11       436  0.02   7.10
+12       286 -0.05 -14.79
+13       209 -0.16 -33.54
+14        91 -0.16 -14.42
+
+Hafte ke hisaab se:
+                       trades   avg   total
+week                                       
+2026-08-10/2026-08-16     167  0.02    3.75
+2026-08-17/2026-08-23     236 -0.09  -20.36
+2026-08-24/2026-08-30     288 -0.05  -13.27
+2026-08-31/2026-09-06     317 -0.11  -35.29
+2026-09-07/2026-09-13     302 -0.13  -39.93
+2026-09-14/2026-09-20     246  0.07   16.67
+2026-09-21/2026-09-27     315 -0.03   -8.00
+2026-09-28/2026-10-04     313 -0.02   -5.44
+2026-10-05/2026-10-11     253  0.18   45.58
+2026-10-12/2026-10-18     246 -0.15  -36.86
+2026-10-19/2026-10-25     275  0.39  106.66
+
+Exit reason:
+            trades   avg
+reason                  
+Day end        125  0.40
+SL            1165 -0.93
+SL (gap)        29 -0.88
+Square-off    1393  0.45
+TP             238  1.78
+TP (gap)         8  2.12
+
+Files: mtf_smc_results.csv, mtf_smc_best_trades.csv

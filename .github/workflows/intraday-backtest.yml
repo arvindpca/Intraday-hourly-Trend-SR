@@ -1,0 +1,64 @@
+name: Run Intraday 1h Backtest
+
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Kitne trading din pe test (default 180)"
+        default: "180"
+      cost:
+        description: "Round-trip cost % (default 0.1)"
+        default: "0.1"
+      min_trades:
+        description: "Ranking ke liye kam se kam trades"
+        default: "30"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: backtest-results
+  cancel-in-progress: false
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Run intraday backtest
+        run: |
+          python backtest_intraday_1h.py \
+            --days "${{ inputs.days }}" \
+            --cost "${{ inputs.cost }}" \
+            --min-trades "${{ inputs.min_trades }}" | tee intraday_output.txt
+
+      - name: Save results to repo
+        run: |
+          RUN_DIR="results/intraday_$(date -u +%Y-%m-%d_%H%M)"
+          mkdir -p "$RUN_DIR"
+          mv intraday_sl_tp_results.csv intraday_best_trades.csv intraday_output.txt "$RUN_DIR"/
+          cp "$RUN_DIR"/intraday_output.txt results/LATEST_INTRADAY.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add results
+          git commit -m "Intraday backtest results $(date -u +%Y-%m-%d)"
+          git pull --rebase origin main
+          git push
+
+      - name: Show summary
+        if: always()
+        run: |
+          if [ -f results/LATEST_INTRADAY.txt ]; then
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            tail -n 45 results/LATEST_INTRADAY.txt >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi

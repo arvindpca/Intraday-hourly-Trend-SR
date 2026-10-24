@@ -295,6 +295,7 @@ def prepare(d5, tf, trend_ctx, nifty_ctx, nifty_trend_ctx):
     if not sig_df.empty:
         sig_df["aligned"] = (trend[sig_df["dec"]] == sig_df["side"]) & (nifty[sig_df["dec"]] == sig_df["side"])
         sig_df["strict"] = sig_df["aligned"] & (nifty_tr[sig_df["dec"]] == sig_df["side"])
+        sig_df["vr"] = V[sig_df["dec"]] / np.nan_to_num(vol_avg[sig_df["dec"]], nan=np.inf)
     return A, sig_df
 
 
@@ -342,11 +343,12 @@ def simulate(sym, A, sig, test_start, sl_mode, tp_r, cost):
             j += 1
         last_exit = j
         trades.append((sym, "Buy" if side == 1 else "Short", idx[e], idx[j], round(entry, 2),
-                       round(sl, 2), round(px, 2), why, side * (px / entry - 1) * 100 - cost * 100))
+                       round(sl, 2), round(px, 2), why, side * (px / entry - 1) * 100 - cost * 100,
+                       getattr(row, "vr", 0.0)))
     return trades
 
 
-COLS = ["symbol", "side", "entry_time", "exit_time", "entry", "sl", "exit", "reason", "ret_pct"]
+COLS = ["symbol", "side", "entry_time", "exit_time", "entry", "sl", "exit", "reason", "ret_pct", "vr"]
 
 
 def stats(df, mid):

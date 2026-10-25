@@ -1,0 +1,31 @@
+name: Run Position Size Variants Backtest
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: backtest-results
+  cancel-in-progress: false
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Run
+        shell: bash
+        run: python portfolio_variants.py | grep -v "^  downloading"
+      - name: Save results
+        run: |
+          D="results/variants_$(date -u +%Y-%m-%d_%H%M)"; mkdir -p "$D"
+          mv variant_*.csv variants_output.txt "$D"/ && cp "$D"/variants_output.txt results/LATEST_VARIANTS.txt
+          git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add results && git commit -m "Variants backtest results $(date -u +%F)" && git pull --rebase origin main && git push

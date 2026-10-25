@@ -14,7 +14,7 @@ import yfinance as yf
 
 import backtest_macd_breakout as core
 
-VARIANTS = [(50_000, 5), (10_000, 10)]
+VARIANTS = [(20_000, 5), (50_000, 5), (10_000, 10)]
 ENTRY_MODES = ["close", "next_open"]
 SL_PCT, MAX_HOLD, COST = 0.05, 20, 0.2
 
@@ -136,7 +136,7 @@ def main():
     out(res.to_string(index=False))
 
     for label, t in store.items():
-        if not label.startswith("Rs 10k"):
+        if not label.startswith("Rs 20k"):
             continue
         out(f"\n================ {label} ================")
         t = t.copy()

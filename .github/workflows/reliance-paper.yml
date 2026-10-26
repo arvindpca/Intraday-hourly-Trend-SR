@@ -1,0 +1,79 @@
+name: Reliance Paper Book (2 strategies, Rs 1 lakh, live loop)
+
+# GitHub har-5-min wale schedule ko aksar chhod deta hai. Isliye ab EK job subah
+# shuru hota hai aur andar hi har 5 min check karta hai (market band hone tak).
+# Kai start-time rakhe hain: pehla chhoot jaye to agla sambhal leta hai.
+# Ek waqt pe ek hi job chalta hai (concurrency); dobara chalne pe bhi alert duplicate
+# nahi hote (state.json + trade ID).
+on:
+  schedule:
+    # IST 09:07, 09:13, 09:19 (subah ka main start)
+    - cron: "37 3 * * 1-5"
+    - cron: "43 3 * * 1-5"
+    - cron: "49 3 * * 1-5"
+    # IST 10:41, 12:23, 14:11 (backup -- agar subah wala chhoot gaya / 6 ghante ki limit)
+    - cron: "11 5 * * 1-5"
+    - cron: "53 6 * * 1-5"
+    - cron: "41 8 * * 1-5"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "reliance_paper/*.py"
+      - ".github/workflows/reliance-paper.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: reliance-paper
+  cancel-in-progress: false
+
+jobs:
+  paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      ANGEL_API_KEY: ${{ secrets.ANGEL_API_KEY }}
+      ANGEL_CLIENT_ID: ${{ secrets.ANGEL_CLIENT_ID }}
+      ANGEL_PASSWORD: ${{ secrets.ANGEL_PASSWORD }}
+      ANGEL_TOTP_SECRET: ${{ secrets.ANGEL_TOTP_SECRET }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      PAPER_CAPITAL: "100000"
+      PAPER_STRATEGIES: "MOM,PBS"
+      LOOP_MAX_MIN: "345"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install smartapi-python pyotp logzero websocket-client requests pandas numpy tabulate
+      - name: Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git pull -q --rebase origin main || true
+      - name: Telegram + Angel One test (only on code push)
+        if: github.event_name == 'push'
+        run: |
+          python reliance_paper/paper_live.py --hello
+          python reliance_paper/paper_live.py
+      - name: Paper book loop (har 5 min, 15:45 tak)
+        run: |
+          set -o pipefail
+          python reliance_paper/paper_live.py --loop 2>&1 | tee /tmp/run.log
+      - name: Save error log (sirf fail hone par)
+        if: failure()
+        run: |
+          mkdir -p reliance_paper/paper
+          { date -u; tail -60 /tmp/run.log; } > reliance_paper/paper/last_error.log
+          git add -f reliance_paper/paper
+          git commit -q -m "Reliance paper error log [skip ci]" || true
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done
+      - name: Summary
+        if: always()
+        run: |
+          [ -f reliance_paper/paper/STATUS.md ] && cat reliance_paper/paper/STATUS.md >> "$GITHUB_STEP_SUMMARY" || true

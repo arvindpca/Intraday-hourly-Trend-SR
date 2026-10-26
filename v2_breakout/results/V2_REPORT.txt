@@ -1,0 +1,167 @@
+501 symbols | Rs 20,000 x 5 | capital Rs 100,000 | cost 0.2%
+Stocks 474 | test 2023-08-08 se 2026-10-26
+
+Signals (test period): FIXED liquidity 1028 (~26.6/mahina) | FIXED + Nifty filter 830 (~21.5/mahina) | ORIGINAL (SMA close > 5000) 98 (~2.5/mahina)
+
+ORIGINAL Chartink (SMA close>5000, no filter, close entry, candle-low SL, 20 din): {'trades': 68, 'win_pct': 45.6, 'net_pnl': 9588, 'return_pct': np.float64(9.6), 'pf': np.float64(1.37), 'avg_win': 1153, 'avg_loss': -707, 'max_dd': -8970, 'avg_days': np.float64(14.4), 'first_half': 3791, 'second_half': 5798}
+
+================ SAARE COMBOS (25+ trades), profit ke hisaab se ================
+nifty_filter          entry         SL               exit  trades  win_pct  net_pnl  return_pct   pf  avg_win  avg_loss  max_dd  avg_days  first_half  second_half
+          ON same-day close Candle low             20 din     185     41.1    48925        48.9 1.54     1835      -831   -9711      14.1       36835        12090
+          ON same-day close Candle low   EMA20 close exit     160     34.4    47731        47.7 1.68     2137      -665  -15116      15.9       38733         8998
+          ON same-day close         5%   EMA20 close exit     157     36.9    46357        46.4 1.66     2014      -711  -13930      16.4       35459        10898
+          ON same-day close     2x ATR   EMA20 close exit     150     36.7    45702        45.7 1.69     2028      -693  -15314      17.4       32368        13334
+          ON same-day close     2x ATR             10 din     269     53.9    45167        45.2 1.45     1001      -806   -7286       8.7       28627        16540
+          ON  next-day open     2x ATR             20 din     181     39.8    44771        44.8 1.45     1995      -907  -11765      14.4       24808        19964
+         OFF same-day close         5%             20 din     237     43.0    44732        44.7 1.36     1641      -909  -25483      13.7       41512         3220
+          ON same-day close Candle low             10 din     279     50.2    44415        44.4 1.42     1071      -759  -11208       8.2       29863        14552
+          ON same-day close         5%             10 din     278     50.7    44205        44.2 1.40     1088      -797  -12028       8.3       25717        18488
+         OFF same-day close         5%   EMA20 close exit     214     33.6    43248        43.2 1.42     2042      -731  -22806      14.9       29220        14028
+          ON  next-day open Candle low             20 din     195     36.9    40672        40.7 1.39     2015      -849  -10977      13.2       31940         8733
+         OFF same-day close Candle low             20 din     247     38.5    34209        34.2 1.26     1720      -850  -31845      13.1       35645        -1435
+          ON  next-day open     2x ATR   EMA20 close exit     160     36.2    32457        32.5 1.40     1968      -801  -12823      15.7       27944         4513
+          ON same-day close         5% 2R target / 20 din     233     45.1    32158        32.2 1.27     1425      -917  -13132      10.7       33567        -1409
+          ON  next-day open         5%   EMA20 close exit     171     35.7    31134        31.1 1.36     1936      -791  -18743      14.5       27869         3265
+          ON same-day close     2x ATR             20 din     178     42.1    30656        30.7 1.32     1682      -927  -15748      14.9        7625        23031
+         OFF  next-day open     2x ATR             20 din     242     42.1    29387        29.4 1.21     1653      -995  -31180      13.4       27593         1794
+         OFF  next-day open     2x ATR 2R target / 20 din     280     43.9    28407        28.4 1.18     1485      -983  -23762      11.5       21975         6432
+         OFF same-day close         5%             10 din     371     48.2    27510        27.5 1.17     1062      -847  -19743       8.1       23137         4373
+          ON  next-day open     2x ATR             10 din     280     48.9    27284        27.3 1.24     1044      -810  -12840       8.3       17180        10104
+         OFF same-day close     2x ATR             10 din     365     50.1    26536        26.5 1.16     1028      -888  -23774       8.3       29956        -3420
+          ON same-day close         5%             20 din     182     42.3    25504        25.5 1.27     1566      -906  -11971      14.2       19133         6372
+         OFF  next-day open         5%             20 din     262     38.9    22904        22.9 1.15     1688      -933  -25099      12.3       17628         5276
+         OFF same-day close         5% 2R target / 20 din     299     42.5    22060        22.1 1.14     1412      -914  -22434      10.5       27067        -5007
+          ON  next-day open Candle low   EMA20 close exit     173     35.3    21050        21.1 1.25     1736      -758  -12764      14.4       16107         4943
+         OFF  next-day open     2x ATR             10 din     371     47.7    20780        20.8 1.13     1049      -850  -20952       8.0       18436         2343
+          ON same-day close     2x ATR 2R target / 20 din     205     45.4    19434        19.4 1.18     1367      -962  -10551      12.8        7613        11821
+         OFF same-day close Candle low   EMA20 close exit     223     30.5    17876        17.9 1.16     1938      -735  -23302      14.2       24642        -6766
+          ON  next-day open Candle low             10 din     287     46.0    15940        15.9 1.13     1045      -787  -12251       7.7        9613         6327
+         OFF same-day close Candle low             10 din     376     45.2    15076        15.1 1.09     1062      -803  -24310       7.8       23254        -8178
+         OFF same-day close     2x ATR   EMA20 close exit     213     34.3    14764        14.8 1.13     1722      -792  -24114      14.9       13689         1075
+          ON  next-day open     2x ATR 2R target / 20 din     214     41.1    13992        14.0 1.12     1491      -930  -14656      11.9       15958        -1966
+         OFF same-day close Candle low 2R target / 20 din     322     40.1    11946        11.9 1.07     1402      -875  -28642       9.7       25830       -13884
+          ON same-day close Candle low 2R target / 20 din     244     39.8     9504         9.5 1.08     1384      -849  -17793      10.1       18128        -8624
+          ON  next-day open         5%             10 din     290     45.5     8453         8.5 1.07     1046      -820  -20828       7.7        3446         5007
+         OFF same-day close     2x ATR             20 din     239     41.0     7550         7.5 1.05     1545     -1020  -39981      13.7       17167        -9617
+          ON  next-day open         5%             20 din     198     35.9     6319         6.3 1.05     1724      -914  -19740      12.7        2281         4037
+         OFF same-day close     2x ATR 2R target / 20 din     267     43.1     4525         4.5 1.03     1369     -1006  -25598      12.1        9571        -5047
+         OFF  next-day open         5% 2R target / 20 din     323     39.9     4231         4.2 1.02     1428      -928  -28625       9.6        4954         -723
+          ON  next-day open Candle low 2R target / 20 din     234     37.6     3211         3.2 1.02     1544      -909  -17120      10.3        4990        -1779
+          ON  next-day open         5% 2R target / 20 din     247     38.5    -4198        -4.2 0.97     1417      -913  -18559       9.9        2412        -6610
+         OFF  next-day open         5%   EMA20 close exit     242     33.5    -5228        -5.2 0.96     1525      -800  -30477      12.9       -5271           43
+         OFF  next-day open Candle low 2R target / 20 din     316     36.7    -7528        -7.5 0.96     1520      -919  -35929       9.7        9432       -16960
+         OFF  next-day open Candle low             20 din     266     33.1   -10371       -10.4 0.94     1700      -899  -45015      11.7       14428       -24799
+         OFF  next-day open         5%             10 din     396     43.4   -10728       -10.7 0.94     1041      -847  -26925       7.3       -2033        -8695
+         OFF  next-day open     2x ATR   EMA20 close exit     230     33.5   -13448       -13.4 0.90     1491      -838  -34244      13.7       -5533        -7915
+         OFF  next-day open Candle low   EMA20 close exit     245     29.8   -14347       -14.3 0.90     1677      -795  -35243      12.7        1845       -16192
+         OFF  next-day open Candle low             10 din     389     42.4   -15925       -15.9 0.91     1025      -826  -40278       7.3        9862       -25787
+
+Profit wale combos: 40 / 48 | dono aadhe hisson me profit: 27
+
+nifty_filter ke hisaab se:
+              combos  profit  median_pnl  median_pf
+nifty_filter                                       
+OFF               24      17     14920.0       1.11
+ON                24      23     30895.0       1.30
+
+entry ke hisaab se:
+                combos  profit  median_pnl  median_pf
+entry                                                
+next-day open       24      16     11222.5       1.10
+same-day close      24      24     29083.0       1.27
+
+SL ke hisaab se:
+            combos  profit  median_pnl  median_pf
+SL                                               
+2x ATR          16      15     26910.0       1.18
+5%              16      13     24204.0       1.16
+Candle low      16      12     15508.0       1.11
+
+exit ke hisaab se:
+                    combos  profit  median_pnl  median_pf
+exit                                                     
+10 din                  12      10     23658.0       1.14
+20 din                  12      11     30021.5       1.27
+2R target / 20 din      12      10     10725.0       1.08
+EMA20 close exit        12       9     26092.0       1.31
+
+================ BEST (consistent, PF se): filter ON | same-day close | SL 2x ATR | exit EMA20 close exit ================
+nifty_filter                  ON
+entry             same-day close
+SL                        2x ATR
+exit            EMA20 close exit
+trades                       150
+win_pct                     36.7
+net_pnl                    45702
+return_pct                  45.7
+pf                          1.69
+avg_win                     2028
+avg_loss                    -693
+max_dd                    -15314
+avg_days                    17.4
+first_half                 32368
+second_half                13334
+
+Saal-wise:
+      trades      pnl  win
+year                      
+2023      16   4908.0    5
+2024      57  26195.0   18
+2025      51  -6395.0   18
+2026      26  20994.0   14
+
+Month-wise:
+         trades      pnl      cum
+month                            
+2023-08       3  -2514.0  -2514.0
+2023-09       4   2555.0     41.0
+2023-10       7   6079.0   6120.0
+2023-11       1   -578.0   5542.0
+2023-12       1   -635.0   4907.0
+2024-01       4   6952.0  11859.0
+2024-02       6   6095.0  17954.0
+2024-03       4   2417.0  20371.0
+2024-04       6   5769.0  26140.0
+2024-05       3   -116.0  26024.0
+2024-06       6  -3303.0  22721.0
+2024-07       4  14932.0  37653.0
+2024-08       5    846.0  38499.0
+2024-09       9     18.0  38517.0
+2024-10       7  -5422.0  33095.0
+2024-12       3  -1993.0  31102.0
+2025-01       2   1265.0  32367.0
+2025-04       3  -3642.0  28725.0
+2025-05       5  -2084.0  26641.0
+2025-06       6   4116.0  30757.0
+2025-07       8   3699.0  34456.0
+2025-08       4  -2700.0  31756.0
+2025-09       6  -3490.0  28266.0
+2025-10       7  -1369.0  26897.0
+2025-11       6  -1373.0  25524.0
+2025-12       4   -819.0  24705.0
+2026-01       3   3196.0  27901.0
+2026-02       5   8978.0  36879.0
+2026-03       3  -1390.0  35489.0
+2026-05       4  -2485.0  33004.0
+2026-06       1  -1110.0  31894.0
+2026-07       5  -1431.0  30463.0
+2026-09       5  15236.0  45699.0
+
+Exit reason:
+                 trades     avg    total
+reason                                  
+60 din pure           2  7815.0  15631.0
+EMA20 ke neeche     124   439.0  54378.0
+SL                   19  -962.0 -18280.0
+SL (gap)              5 -1205.0  -6027.0
+
+Top 8 trades:
+    symbol entry_time  exit_time  days  ret_pct     pnl
+ KIRLOSENG 2024-04-22 2024-07-11    55    44.21 8515.09
+HEROMOTOCO 2023-11-16 2024-02-14    60    46.77 8270.26
+COROMANDEL 2024-04-26 2024-07-25    60    37.33 7360.60
+   UCOBANK 2023-08-16 2023-10-09    36    32.89 6536.35
+    AETHER 2026-06-22 2026-09-04    53    32.51 6341.54
+ ZYDUSLIFE 2024-01-23 2024-04-12    53    31.96 6159.91
+NATIONALUM 2025-12-12 2026-02-05    37    30.81 6092.71
+     GICRE 2023-11-16 2024-01-10    37    25.96 5122.30

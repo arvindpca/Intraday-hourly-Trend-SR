@@ -1,0 +1,56 @@
+# schedule re-register: 2026-10-26
+name: Paper V2.1 3PM Alert (pre-close signals)
+
+on:
+  schedule:
+    # GitHub schedule kabhi run chhod deta hai, isliye kai slots (IST 2:41, 2:49, 2:57, 3:05, 3:13).
+    # Din me sirf pehla successful run message bhejta hai; 3:22 ke baad skip.
+    - cron: "14 9 * * 1-5"
+    - cron: "22 9 * * 1-5"
+    - cron: "30 9 * * 1-5"
+    - cron: "38 9 * * 1-5"
+    - cron: "46 9 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Test message (market band ho tab) - 1 = test"
+        default: "1"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: paper-v21
+  cancel-in-progress: false
+
+jobs:
+  alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ANGEL_API_KEY: ${{ secrets.ANGEL_API_KEY }}
+      ANGEL_CLIENT_ID: ${{ secrets.ANGEL_CLIENT_ID }}
+      ANGEL_PASSWORD: ${{ secrets.ANGEL_PASSWORD }}
+      ANGEL_TOTP_SECRET: ${{ secrets.ANGEL_TOTP_SECRET }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      PRECLOSE_TEST: ${{ github.event_name == 'workflow_dispatch' && inputs.test || '0' }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r paper_swing/requirements.txt
+      - name: Run 3PM alert
+        shell: bash
+        run: python paper_v21/preclose_alert_v21.py 2>&1 | grep -v "^  downloading"
+      - name: Save log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add paper_v21/state
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "V2.1 3PM alert log $(TZ=Asia/Kolkata date +%F)"
+          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done

@@ -1,0 +1,52 @@
+# schedule re-register: 2026-10-26
+name: Paper V2.1 Shant Trader (daily, after market)
+
+on:
+  schedule:
+    # Market band ke baad kai slots (IST 4:37, 5:13, 5:43, 6:37, 8:13, 10:13 PM).
+    # GitHub run chhod de to agla pakad le. Same din dobara process nahi hota.
+    - cron: "10 11 * * 1-5"
+    - cron: "46 11 * * 1-5"
+    - cron: "16 12 * * 1-5"
+    - cron: "10 13 * * 1-5"
+    - cron: "46 14 * * 1-5"
+    - cron: "46 16 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: paper-v21
+  cancel-in-progress: false
+
+jobs:
+  paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r paper_swing/requirements.txt
+      - name: Run paper trader
+        shell: bash
+        run: python paper_v21/paper_trader_v21.py 2>&1 | grep -v "^  downloading"
+      - name: Save state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add paper_v21/state
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "Paper V2.1 update $(TZ=Asia/Kolkata date +%F)"
+          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
+      - name: Summary
+        if: always()
+        run: |
+          [ -f paper_v21/state/STATUS.md ] && cat paper_v21/state/STATUS.md >> "$GITHUB_STEP_SUMMARY" || true

@@ -56,11 +56,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
           git pull -q --rebase origin main || true
-      - name: Telegram + Angel One test (only on code push)
+      - name: Angel One login + data check (only on code push, koi alert nahi)
         if: github.event_name == 'push'
-        run: |
-          python reliance_paper/paper_live.py --hello
-          python reliance_paper/paper_live.py
+        run: python reliance_paper/paper_live.py --check
       - name: Paper book loop (har 5 min, 15:45 tak)
         run: |
           set -o pipefail

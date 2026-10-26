@@ -282,6 +282,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--hello", action="store_true")
     ap.add_argument("--loop", action="store_true")
+    ap.add_argument("--check", action="store_true", help="sirf Angel login + data check, koi alert/state nahi")
     ap.add_argument("--replay", help="YYYY-MM-DD: data/ CSV pe ek din har 5 min step (dry run)")
     args = ap.parse_args()
     if args.hello:
@@ -309,6 +310,14 @@ def main():
         return
     if args.loop:
         loop()
+        return
+    if args.check:
+        now = ist_now()
+        rel, nif = fetch("RELIANCE", now), fetch("NIFTY", now)
+        d = prepare_all(completed(rel, now), completed(nif, now))
+        last = d.iloc[-1]
+        print(f"CHECK OK | Reliance {len(rel)} candles, last {d.index[-1]} close {last.close:.2f} "
+              f"ATR {last.atr:.2f} VWAP {last.vwap:.2f} ADX {last.adx:.1f} | Nifty {len(nif)} candles")
         return
     now = ist_now()
     run(fetch("RELIANCE", now), fetch("NIFTY", now), now)

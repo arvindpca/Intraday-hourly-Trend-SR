@@ -1,0 +1,9 @@
+smartapi-python
+pyotp
+logzero
+websocket-client
+python-dotenv
+requests
+yfinance
+pandas
+numpy

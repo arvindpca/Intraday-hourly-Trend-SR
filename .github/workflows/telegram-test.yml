@@ -1,0 +1,65 @@
+name: Telegram Test (Paper Swing)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+    steps:
+      - name: Check secrets exist
+        run: |
+          [ -n "$TELEGRAM_BOT_TOKEN" ] || { echo "TELEGRAM_BOT_TOKEN missing"; exit 1; }
+          [ -n "$TELEGRAM_CHAT_ID" ] || { echo "TELEGRAM_CHAT_ID missing"; exit 1; }
+      - name: Diagnose token format (value never printed)
+        run: |
+          python3 - <<'PY'
+          import os, re, unicodedata
+          t = os.environ["TELEGRAM_BOT_TOKEN"]
+          print("length", len(t))
+          print("has whitespace/newline", any(c.isspace() for c in t))
+          print("has invisible chars", any(unicodedata.category(c) == "Cf" for c in t))
+          print("has quotes", any(c in "\"'" for c in t))
+          print("starts with 'bot'", t.strip().lower().startswith("bot"))
+          print("looks like 123456:ABC... format", bool(re.fullmatch(r"\d{6,12}:[A-Za-z0-9_-]{30,}", t)))
+          PY
+      - name: Raw token check (as stored)
+        id: raw
+        continue-on-error: true
+        run: |
+          code=$(curl -s -o /tmp/me.json -w "%{http_code}" "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getMe"); echo "HTTP $code"; [ "$code" = "200" ]
+      - name: Cleaned token check
+        id: clean
+        run: |
+          python3 - <<'PY'
+          import os, re, unicodedata, json, urllib.request, urllib.parse
+          def clean(v):
+              v = "".join(c for c in v if unicodedata.category(c) != "Cf").strip().strip("\"'").strip()
+              if v.lower().startswith("bot") and ":" in v:
+                  v = v[3:]
+              return v
+          tok = clean(os.environ["TELEGRAM_BOT_TOKEN"]); chat = clean(os.environ["TELEGRAM_CHAT_ID"])
+          try:
+              d = json.load(urllib.request.urlopen(f"https://api.telegram.org/bot{tok}/getMe", timeout=20))
+              print("::notice title=Bot OK::bot username @" + str(d["result"].get("username")))
+          except Exception as e:
+              print("getMe FAILED after cleaning:", e); raise SystemExit(2)
+          msg = ("✅ <b>Paper Swing - Telegram Test</b>\n\nYe test message hai. Paper trading bot chalu hai.\n"
+                 "Roz Mon-Fri shaam 4:37 baje update aayega.\n\nNifty abhi 50 EMA ke neeche hai, isliye trade tab tak nahi aayega.")
+          data = urllib.parse.urlencode({"chat_id": chat, "text": msg, "parse_mode": "HTML"}).encode()
+          try:
+              d = json.load(urllib.request.urlopen(f"https://api.telegram.org/bot{tok}/sendMessage", data=data, timeout=20))
+              print("::notice title=Telegram SENT::message delivered ok=" + str(d.get("ok")))
+          except urllib.error.HTTPError as e:
+              body = e.read().decode()[:200]
+              cid = chat
+              print(f"::error title=Telegram sendMessage {e.code}::{body} | chat_id length={len(cid)} starts_minus={cid.startswith('-')} digits_only={cid.lstrip('-').isdigit()}")
+              raise SystemExit(3)
+          PY

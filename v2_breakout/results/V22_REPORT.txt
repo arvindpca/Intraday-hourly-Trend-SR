@@ -1,0 +1,132 @@
+Stocks 475 | test 2023-08-08 se 2026-10-23 (39 mahine) | Rs 20,000 x 5
+  V2.1 signals (Nifty ON): 478 (~12.4/mahina)
+  V2.2 signals (Nifty ON): 420 (~10.9/mahina)
+
+================ V2.1 vs V2.2 - har setting pe ================
+                                              trades_V2.1  trades_V2.2  net_pnl_V2.1  net_pnl_V2.2  pf_V2.1  pf_V2.2  max_dd_V2.1  max_dd_V2.2  V2.2_better
+entry          SL         exit                                                                                                                             
+same-day close Candle low EMA20 close exit          131.0        127.0       38695.0       59803.0     1.81     2.31      -9630.0      -7149.0         True
+               2x ATR     EMA20 close exit          124.0        118.0       41304.0       54868.0     1.83     2.23      -7873.0      -6560.0         True
+                          10 din                    216.0        211.0       54953.0       49171.0     1.85     1.72      -7589.0      -7453.0        False
+next-day open  Candle low EMA20 close exit          140.0        134.0       31285.0       49067.0     1.52     1.85      -8807.0      -8452.0         True
+               5%         EMA20 close exit          133.0        126.0       27745.0       48971.0     1.46     1.88     -11708.0      -9671.0         True
+same-day close Candle low 10 din                    226.0        220.0       48592.0       48527.0     1.69     1.70      -9867.0      -9414.0        False
+               5%         10 din                    216.0        210.0       49359.0       47897.0     1.74     1.72      -8849.0      -7029.0        False
+                          EMA20 close exit          128.0        123.0       30806.0       43332.0     1.60     1.91      -9577.0      -6498.0         True
+               2x ATR     20 din                    147.0        142.0       49570.0       41033.0     1.76     1.64      -8639.0      -8658.0        False
+next-day open  2x ATR     20 din                    150.0        145.0       33846.0       37838.0     1.46     1.54      -9950.0     -11382.0         True
+               5%         20 din                    156.0        148.0       32955.0       36762.0     1.41     1.50     -11889.0     -11597.0         True
+same-day close 5%         2R target / 20 din        178.0        173.0       29900.0       35690.0     1.37     1.47     -15015.0      -9433.0         True
+next-day open  2x ATR     EMA20 close exit          136.0        129.0       25667.0       32498.0     1.41     1.55      -9518.0      -8208.0         True
+same-day close 5%         20 din                    153.0        149.0       31510.0       31496.0     1.42     1.43      -9417.0     -11241.0        False
+               Candle low 20 din                    160.0        153.0       28963.0       30453.0     1.40     1.45     -10889.0      -9453.0         True
+next-day open  2x ATR     10 din                    229.0        219.0       28921.0       28768.0     1.35     1.37     -10108.0      -9556.0        False
+               Candle low 10 din                    239.0        229.0       16670.0       27187.0     1.18     1.32     -12455.0     -11604.0         True
+               5%         10 din                    230.0        222.0       17450.0       24366.0     1.20     1.29     -15959.0     -12583.0         True
+same-day close 2x ATR     2R target / 20 din        170.0        164.0       19331.0       24324.0     1.25     1.32     -13719.0     -10501.0         True
+next-day open  5%         2R target / 20 din        186.0        174.0       18400.0       24252.0     1.19     1.29     -17720.0     -16876.0         True
+same-day close Candle low 2R target / 20 din        196.0        185.0       36728.0       23124.0     1.45     1.29     -10377.0     -12192.0        False
+next-day open  2x ATR     2R target / 20 din        175.0        170.0       13539.0       20679.0     1.15     1.25     -20360.0     -13894.0         True
+               Candle low 2R target / 20 din        194.0        182.0       17706.0       17878.0     1.18     1.20     -14400.0     -13682.0         True
+                          20 din                    165.0        159.0       19726.0       17552.0     1.23     1.22     -11856.0     -10699.0        False
+
+V2.1: profit combos 24/24 | dono hisson me profit 23 | median profit Rs 30,353 | median PF 1.42 | median max DD Rs -10,242
+
+V2.2: profit combos 24/24 | dono hisson me profit 24 | median profit Rs 34,094 | median PF 1.48 | median max DD Rs -9,614
+V2.2 better in 16/24 settings
+V2.1 | close, 2x ATR, 10 din | 0.2% + DP Rs24: trades 216 | profit Rs 49,769 | PF 1.74 | yearly {2023: 12620.0, 2024: 13080.0, 2025: 21157.0, 2026: 2912.0}
+V2.2 | close, 2x ATR, 10 din | 0.2% + DP Rs24: trades 211 | profit Rs 44,107 | PF 1.63 | yearly {2023: 13449.0, 2024: 10155.0, 2025: 16283.0, 2026: 4220.0}
+
+================ V2.2 BEST: same-day close | SL Candle low | exit EMA20 close exit ================
+version                    V2.2
+entry            same-day close
+SL                   Candle low
+exit           EMA20 close exit
+trades                      127
+win_pct                    40.2
+net_pnl                   59803
+return_pct                 59.8
+pf                         2.31
+avg_win                    2067
+avg_loss                   -600
+max_dd                    -7149
+avg_days                   17.5
+first_half                31371
+second_half               28432
+(Same setting pe V2.1: profit Rs 38,695 | PF 1.81 | DD Rs -9,630)
+
+Saal-wise:
+      trades      pnl  win
+year                      
+2023      15   2949.0    6
+2024      54  28148.0   19
+2025      37  -1536.0   13
+2026      21  30242.0   13
+
+Month-wise:
+         trades      pnl      cum
+month                            
+2023-08       2   -939.0   -939.0
+2023-09       3   2591.0   1652.0
+2023-10       7   1928.0   3580.0
+2023-11       2      5.0   3585.0
+2023-12       1   -635.0   2950.0
+2024-01       6  11377.0  14327.0
+2024-02       6   3543.0  17870.0
+2024-03       4   2122.0  19992.0
+2024-04       5   6220.0  26212.0
+2024-05       5   -753.0  25459.0
+2024-06       7  -1537.0  23922.0
+2024-07       2    210.0  24132.0
+2024-08       5   4581.0  28713.0
+2024-09       6   2734.0  31447.0
+2024-10       6   1039.0  32486.0
+2024-12       2  -1388.0  31098.0
+2025-01       1    274.0  31372.0
+2025-04       2  -2043.0  29329.0
+2025-05       3  -2075.0  27254.0
+2025-06       3    361.0  27615.0
+2025-07       6   6035.0  33650.0
+2025-08       3   -686.0  32964.0
+2025-09       6  -2886.0  30078.0
+2025-10       5   -808.0  29270.0
+2025-11       5   1197.0  30467.0
+2025-12       3   -903.0  29564.0
+2026-01       5   -546.0  29018.0
+2026-02       3   8192.0  37210.0
+2026-03       1   -865.0  36345.0
+2026-05       2  -1618.0  34727.0
+2026-06       2  -1843.0  32884.0
+2026-07       3   1254.0  34138.0
+2026-09       5  25668.0  59806.0
+Profit mahine 18 | loss mahine 15
+
+Exit reason:
+                 trades     avg    total
+reason                                  
+60 din pure           3  9426.0  28278.0
+EMA20 ke neeche      78   860.0  67060.0
+SL                   42  -763.0 -32058.0
+SL (gap)              4  -869.0  -3477.0
+
+Top 8:
+    symbol entry_time  exit_time  days  ret_pct      pnl
+   WELCORP 2026-07-06 2026-09-29    60    84.12 15543.75
+BAJAJ-AUTO 2023-11-23 2024-02-21    60    38.94  6568.68
+    AETHER 2026-06-22 2026-09-04    53    32.51  6341.54
+ COALINDIA 2023-10-10 2024-01-08    60    31.19  6165.78
+ ZYDUSLIFE 2024-01-23 2024-04-12    53    31.96  6159.91
+NATIONALUM 2025-12-12 2026-02-05    37    30.81  6092.71
+     GICRE 2023-11-16 2024-01-10    37    25.96  5122.30
+CUMMINSIND 2024-01-24 2024-03-13    33    24.12  4486.53
+
+Top 8 loss:
+    symbol entry_time  exit_time  days  ret_pct      pnl          reason
+ MINDACORP 2023-10-19 2023-10-23     2    -7.04 -1436.61              SL
+     AAVAS 2025-04-21 2025-04-25     4    -6.72 -1349.39              SL
+   IPCALAB 2024-02-06 2024-02-14     6    -5.40 -1066.94              SL
+BHARATFORG 2026-05-07 2026-05-18     7    -5.11 -1055.66 EMA20 ke neeche
+  TATACOMM 2024-09-25 2024-10-07     7    -5.43 -1053.25              SL
+ ZFCVINDIA 2026-02-11 2026-02-20     7    -5.32 -1025.94        SL (gap)
+       IEX 2024-08-02 2024-08-14     8    -4.87 -1004.43 EMA20 ke neeche
+     IRCTC 2024-05-17 2024-05-29     7    -4.99  -992.52              SL

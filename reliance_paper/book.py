@@ -2,10 +2,15 @@
 RELIANCE paper book -- 2 strategies, ek hi position, Rs 1 lakh capital
 ======================================================================
 Strategy A  "MOM"  20-Minute Momentum + 2xATR Trailing SL   (BUY + SELL, din me 1)
+    Signal: (Close - Close 4 candle pehle) / ATR14  > +1.5 BUY,  < -1.5 SELL
+    FINAL FILTERS (loss analysis se):
+      BUY  sirf jab: RSI14 <= 65, Close > EMA20 (5m), ATR% (ATR/price) >= 0.17
+      SELL sirf jab: RSI14 >= 35, Close < EMA20 (5m), aur price VWAP se 0..1 ATR neeche NA ho
 Strategy B  "PBS"  VWAP Pullback Short                       (sirf SELL, din me 2)
     1. Reliance VWAP ke neeche (close < VWAP)
     2. 5-min swing high: candle ka high, 2 candle pehle aur 2 candle baad se zyada
     3. Us swing candle pe:  Nifty 15-min return > +0.1%   YA   ADX(14) > 30
+    3b. Swing candle ka close < EMA20 (5m)  [final filter]
     4. Swing confirm (2 candle baad) -> agli candle ke OPEN pe SELL
     5. SL = swing high + 1xATR, Target = 2 x risk, 15:15 pe exit
     Entry 9:25 - 14:30.
@@ -34,11 +39,17 @@ CAPITAL = float(os.getenv("PAPER_CAPITAL", "100000"))
 PB_START, PB_MAX_PER_DAY, PB_SL_ATR, PB_RR = 565, 2, 1.0, 2.0
 PB_NIFTY_RET, PB_ADX = 0.10, 30.0
 MOM_MAX_PER_DAY = 1
+RSI_BUY_MAX, RSI_SELL_MIN, EMA_TREND, MIN_ATRP_BUY, SELL_VWAP_GAP = 65.0, 35.0, 20, 0.17, 1.0
 NAMES = {"MOM": "20-Min Momentum", "PBS": "VWAP Pullback Short"}
 
 
 def _rma(s, n):
     return s.ewm(alpha=1 / n, adjust=False).mean()
+
+
+def _rsi(s, n=14):
+    x = s.diff()
+    return 100 - 100 / (1 + _rma(x.clip(lower=0), n) / _rma(-x.clip(upper=0), n))
 
 
 def prepare_all(rel, nif):
@@ -57,7 +68,16 @@ def prepare_all(rel, nif):
     d["nret3"] = (n.close.pct_change(3) * 100).reindex(d.index)
     same = (d.day.shift(-2) == d.day) & (d.day.shift(2) == d.day)
     d["fhigh"] = (h == h.rolling(5, center=True).max()) & same
-    d["pb_filter"] = (c < d.vwap) & ((d.nret3 > PB_NIFTY_RET) | (d.adx > PB_ADX))
+    d["rsi14"] = _rsi(c)
+    d["ema20"] = c.ewm(span=EMA_TREND, adjust=False).mean()
+    d["vwd"] = (c - d.vwap) / d.atr
+    d["atrp"] = d.atr / c * 100
+    raw = d.signal.copy()
+    d["mom_raw"] = raw
+    buy_ok = (d.rsi14 <= RSI_BUY_MAX) & (c > d.ema20) & (d.atrp >= MIN_ATRP_BUY)
+    sell_ok = (d.rsi14 >= RSI_SELL_MIN) & (c < d.ema20) & ~((d.vwd > -SELL_VWAP_GAP) & (d.vwd < 0))
+    d["signal"] = np.where((raw == 1) & buy_ok, 1, np.where((raw == -1) & sell_ok, -1, 0))
+    d["pb_filter"] = (c < d.vwap) & ((d.nret3 > PB_NIFTY_RET) | (d.adx > PB_ADX)) & (c < d.ema20)
     return d
 
 

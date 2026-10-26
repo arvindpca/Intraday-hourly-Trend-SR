@@ -260,6 +260,9 @@ def git_save():
 
 def loop():
     started = time.time()
+    st_now = ist_now()
+    if st_now.hour * 60 + st_now.minute < 8 * 60 + 45:
+        print("Market khulne me der hai (8:45 se pehle) -- loop shuru nahi kiya"); return
     max_secs = float(os.getenv("LOOP_MAX_MIN", "345")) * 60      # GitHub job 6h limit se pehle
     while True:
         now = ist_now()

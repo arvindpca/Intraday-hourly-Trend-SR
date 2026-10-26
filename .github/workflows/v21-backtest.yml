@@ -1,0 +1,29 @@
+name: V2.1 Portfolio Backtest
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: backtest-results
+  cancel-in-progress: false
+
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Run
+        shell: bash
+        run: python v2_breakout/backtest_v21.py | grep -v "^  downloading"
+      - name: Save results
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add v2_breakout/results && git commit -m "V2.1 backtest $(date -u +%F)" && git pull --rebase origin main && git push

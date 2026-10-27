@@ -1,0 +1,36 @@
+name: Market Clock (paper trading auto-run)
+
+# GitHub ka apna cron late/miss karta hai. Ye clock clock/jobs.json ke time pe
+# paper trading workflows chalata hai. Roz ~9:02 IST start (scheduled task + cron backup).
+on:
+  schedule:
+    - cron: "33 3 * * 1-5"   # 9:03 IST backup
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: market-clock
+  cancel-in-progress: false
+
+jobs:
+  morning:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - run: python clock/market_clock.py 13:00
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  afternoon:
+    needs: morning
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - run: python clock/market_clock.py 17:00
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

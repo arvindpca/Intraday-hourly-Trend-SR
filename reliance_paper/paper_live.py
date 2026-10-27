@@ -98,15 +98,34 @@ def completed(d, now):
 # ----------------------------------------------------------- telegram
 def tg(text, dry=False):
     print("TELEGRAM >>", text.replace("\n", " | "))
-    tok, chat = _env("TELEGRAM_BOT_TOKEN"), _env("TELEGRAM_CHAT_ID")
+    tok, chat = _env("TELEGRAM_BOT_TOKEN").strip("\"'"), _env("TELEGRAM_CHAT_ID").strip("\"'")
+    if tok.lower().startswith("bot") and ":" in tok:
+        tok = tok[3:]
     if dry or not (tok and chat):
         return
     import requests
-    try:
-        requests.post(f"https://api.telegram.org/bot{tok}/sendMessage",
-                      data={"chat_id": chat, "text": text, "parse_mode": "HTML"}, timeout=15)
-    except Exception as e:
-        print("Telegram fail:", e)
+    err = ""
+    for attempt in range(3):
+        try:
+            data = {"chat_id": chat, "text": text}
+            if attempt < 2:
+                data["parse_mode"] = "HTML"      # 3rd try: plain text (HTML galti ho to bhi msg jaye)
+            r = requests.post(f"https://api.telegram.org/bot{tok}/sendMessage", data=data, timeout=15)
+            if r.status_code == 200:
+                print("Telegram sent OK")
+                return True
+            err = f"HTTP {r.status_code}: {r.text[:200]}"
+        except Exception as e:
+            err = repr(e)[:200]
+        print("Telegram fail:", err)
+        time.sleep(3)
+    try:  # fail ho to repo me log rahe (git_save ise commit karta hai)
+        os.makedirs(PAPER, exist_ok=True)
+        with open(os.path.join(PAPER, "telegram_errors.log"), "a") as f:
+            f.write(f"{ist_now():%Y-%m-%d %H:%M} {err} | {text[:60]!r}\n")
+    except Exception:
+        pass
+    return False
 
 
 def hhmm(ts):

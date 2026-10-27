@@ -3,7 +3,8 @@
   "trades": {
     "MOM-20261027-1030": {
       "entry_sent": true,
-      "last_sl": 1194.73
+      "last_sl": 1194.73,
+      "exit_sent": true
     }
   }
 }

@@ -3,18 +3,15 @@ name: Paper Swing 3PM Alert (pre-close signals)
 
 on:
   schedule:
-    # GitHub schedule kabhi run chhod deta hai, isliye kai slots (IST 2:41, 2:49, 2:57, 3:05, 3:13).
-    # Din me sirf pehla successful run message bhejta hai; 3:22 ke baad skip.
-    - cron: "11 9 * * 1-5"
-    - cron: "19 9 * * 1-5"
-    - cron: "27 9 * * 1-5"
-    - cron: "35 9 * * 1-5"
-    - cron: "43 9 * * 1-5"
+    # Asli time Market Clock (clock/jobs.json) deta hai: 3:00 PM (V1) / 3:02 PM (V2.1).
+    # Ye sirf backup hai (GitHub schedule aksar late hota hai). 2:55 se pehle aur 3:22 ke baad alert skip.
+    - cron: "32 9 * * 1-5"
+    - cron: "37 9 * * 1-5"
   workflow_dispatch:
     inputs:
       test:
-        description: "Test message (market band ho tab) - 1 = test"
-        default: "1"
+        description: "1 = test message (market band ho tab). Market Clock bina input ke chalata hai = asli alert"
+        default: "0"
 
 permissions:
   contents: write

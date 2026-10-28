@@ -100,6 +100,9 @@ def main():
     if not test and now.hour * 60 + now.minute > 15 * 60 + 22 and not os.getenv("PAPER_AS_OF"):
         print("3:22 ke baad - alert ka fayda nahi, skip")
         return
+    if not test and now.hour * 60 + now.minute < 14 * 60 + 55 and not os.getenv("PAPER_AS_OF"):
+        print("2:55 se pehle - abhi jaldi hai, skip (3 PM wala run bhejega)")
+        return
     syms = pt.symbols()
     names = [s.replace(".NS", "") for s in syms]
 

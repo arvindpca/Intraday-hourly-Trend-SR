@@ -182,23 +182,45 @@ def write_status(df):
     if df.empty:
         lines.append("Abhi tak koi paper trade band nahi hua.\n")
     else:
-        def line(name, g):
+        def line(name, g, bt="—"):
             p = g.pnl_rs.astype(float)
+            w = int((p > 0).sum())
             pf = p[p > 0].sum() / -p[p < 0].sum() if (p < 0).any() else float("inf")
-            return (f"| {name} | {len(g)} | {(p > 0).mean() * 100:.0f}% | ₹{p.sum():+,.0f} | "
-                    f"{p.sum() / CAPITAL * 100:+.2f}% | {pf:.2f} |\n")
-        lines.append("| | Trades | Win | P&L | Return | Profit Factor |\n|---|---|---|---|---|---|\n")
+            aw = f"₹{p[p > 0].mean():+,.0f}" if w else "—"
+            al = f"₹{p[p < 0].mean():+,.0f}" if (p < 0).any() else "—"
+            return (f"| {name} | {len(g)} | {w} / {len(g) - w} | **{w / len(g) * 100:.0f}%** | {bt} | ₹{p.sum():+,.0f} | "
+                    f"{aw} / {al} | {pf:.2f} |\n")
+        lines.append("| Strategy | Trades | Jeet / Haar | Win % (paper) | Win % (backtest) | P&L | Avg jeet / haar | Profit Factor |\n"
+                     "|---|---|---|---|---|---|---|---|\n")
+        for s in ["MOM", "PBS"]:
+            g = df[df.strategy == s]
+            if len(g):
+                lines.append(line(NAMES[s], g, BT_WIN[s]))
         lines.append(line("**TOTAL**", df))
-        for s, g in df.groupby("strategy"):
-            lines.append(line(NAMES.get(s, s), g))
+        lines.append("\n_26 Oct ka MOM trade purane version (bina filter) ka tha._\n")
         lines.append("\n### Last 20 trades\n\n" + df.tail(20).drop(columns=["id"]).to_markdown(index=False) + "\n")
     with open(os.path.join(PAPER, "STATUS.md"), "w") as f:
         f.write("".join(lines))
 
 
+BT_WIN = {"MOM": "44% (1 saal) / 36% (3 saal)", "PBS": "52% (1 saal) / 46% (3 saal)"}   # backtest win rate
+
+
+def _one(g):
+    p = g.pnl_rs.astype(float)
+    w = int((p > 0).sum())
+    return f"{len(g)} trades, {w} jeet / {len(g) - w} haar = {w / len(g) * 100:.0f}% win, ₹{p.sum():+,.0f}"
+
+
 def totals_line(df):
-    p = df.pnl_rs.astype(float)
-    return f"Ab tak: {len(df)} trades, {(p > 0).mean() * 100:.0f}% win, total ₹{p.sum():+,.0f} ({p.sum() / CAPITAL * 100:+.2f}%)"
+    """Har strategy ka win rate ALAG, phir total."""
+    lines = ["<b>Ab tak:</b>"]
+    for s in ["MOM", "PBS"]:
+        g = df[df.strategy == s]
+        if len(g):
+            lines.append(f"• {NAMES[s]}: {_one(g)}  (backtest win {BT_WIN[s]})")
+    lines.append(f"• Total: {_one(df)} ({df.pnl_rs.astype(float).sum() / CAPITAL * 100:+.2f}%)")
+    return "\n".join(lines)
 
 
 # ------------------------------------------------------------------ core

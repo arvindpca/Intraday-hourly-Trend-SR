@@ -2,11 +2,13 @@
 
 Strategies: 20-Min Momentum, VWAP Pullback Short
 
-| | Trades | Win | P&L | Return | Profit Factor |
-|---|---|---|---|---|---|
-| **TOTAL** | 4 | 25% | ₹-901 | -0.90% | 0.52 |
-| 20-Min Momentum | 3 | 0% | ₹-1,875 | -1.87% | 0.00 |
-| VWAP Pullback Short | 1 | 100% | ₹+974 | +0.97% | inf |
+| Strategy | Trades | Jeet / Haar | Win % (paper) | Win % (backtest) | P&L | Avg jeet / haar | Profit Factor |
+|---|---|---|---|---|---|---|---|
+| 20-Min Momentum | 3 | 0 / 3 | **0%** | 44% (1 saal) / 36% (3 saal) | ₹-1,875 | — / ₹-625 | 0.00 |
+| VWAP Pullback Short | 1 | 1 / 0 | **100%** | 52% (1 saal) / 46% (3 saal) | ₹+974 | ₹+974 / — | inf |
+| **TOTAL** | 4 | 1 / 3 | **25%** | — | ₹-901 | ₹+974 / ₹-625 | 0.52 |
+
+_26 Oct ka MOM trade purane version (bina filter) ka tha._
 
 ### Last 20 trades
 

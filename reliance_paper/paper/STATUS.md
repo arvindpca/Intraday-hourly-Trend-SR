@@ -5,8 +5,8 @@ Strategies: 20-Min Momentum, VWAP Pullback Short
 | Strategy | Trades | Jeet / Haar | Win % (paper) | Win % (backtest) | P&L | Avg jeet / haar | Profit Factor |
 |---|---|---|---|---|---|---|---|
 | 20-Min Momentum | 3 | 0 / 3 | **0%** | 44% (1 saal) / 36% (3 saal) | ₹-1,875 | — / ₹-625 | 0.00 |
-| VWAP Pullback Short | 1 | 1 / 0 | **100%** | 52% (1 saal) / 46% (3 saal) | ₹+974 | ₹+974 / — | inf |
-| **TOTAL** | 4 | 1 / 3 | **25%** | — | ₹-901 | ₹+974 / ₹-625 | 0.52 |
+| VWAP Pullback Short | 2 | 2 / 0 | **100%** | 52% (1 saal) / 46% (3 saal) | ₹+1,475 | ₹+738 / — | inf |
+| **TOTAL** | 5 | 2 / 3 | **40%** | — | ₹-399 | ₹+738 / ₹-625 | 0.79 |
 
 **Lagatar loss abhi:** 20-Min Momentum: 3 | VWAP Pullback Short: 0 | Total: 0  (alert 5 pe)
 
@@ -20,3 +20,4 @@ _26 Oct ka MOM trade purane version (bina filter) ka tha._
 | 2026-10-27 | MOM        | SELL   | 2026-10-27 10:30:00 |  1188   | 2026-10-27 11:55:00 | 1194.73 | Trailing SL hit |    84 |    -0.627 |  -625.2  |
 | 2026-10-28 | MOM        | BUY    | 2026-10-28 09:45:00 |  1199.4 | 2026-10-28 10:00:00 | 1194.73 | Trailing SL hit |    83 |    -0.449 |  -447.34 |
 | 2026-10-28 | PBS        | SELL   | 2026-10-28 10:55:00 |  1178.5 | 2026-10-28 13:15:00 | 1166.2  | Target hit (2R) |    84 |     0.984 |   973.8  |
+| 2026-10-28 | PBS        | SELL   | 2026-10-28 14:00:00 |  1164.6 | 2026-10-28 15:20:00 | 1158    | 15:15 time exit |    85 |     0.507 |   501.61 |

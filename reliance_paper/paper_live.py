@@ -197,6 +197,9 @@ def write_status(df):
             if len(g):
                 lines.append(line(NAMES[s], g, BT_WIN[s]))
         lines.append(line("**TOTAL**", df))
+        lines.append(f"\n**Lagatar loss abhi:** " + " | ".join(
+            f"{NAMES[x]}: {loss_streak(df[df.strategy == x])}" for x in ["MOM", "PBS"]) +
+            f" | Total: {loss_streak(df)}  (alert {STREAK_ALERT} pe)\n")
         lines.append("\n_26 Oct ka MOM trade purane version (bina filter) ka tha._\n")
         lines.append("\n### Last 20 trades\n\n" + df.tail(20).drop(columns=["id"]).to_markdown(index=False) + "\n")
     with open(os.path.join(PAPER, "STATUS.md"), "w") as f:
@@ -204,6 +207,38 @@ def write_status(df):
 
 
 BT_WIN = {"MOM": "44% (1 saal) / 36% (3 saal)", "PBS": "52% (1 saal) / 46% (3 saal)"}   # backtest win rate
+
+
+STREAK_ALERT = int(os.getenv("STREAK_ALERT", "5"))
+BT_STREAK = {"MOM": "1 saal me max 6, 3 saal me max 22", "PBS": "1 saal me max 4, 3 saal me max 10",
+             "ALL": "1 saal me max 8, 3 saal me max 10"}
+
+
+def loss_streak(g):
+    """Aakhri se peeche ginti: lagatar kitne trade loss me."""
+    n = 0
+    for v in reversed(g.pnl_rs.astype(float).tolist()):
+        if v < 0:
+            n += 1
+        else:
+            break
+    return n
+
+
+def streak_alerts(df, strat):
+    msgs = []
+    k = loss_streak(df[df.strategy == strat])
+    if k >= STREAK_ALERT:
+        g = df[df.strategy == strat].tail(k)
+        msgs.append(f"⚠️ <b>RELIANCE PAPER: {NAMES[strat]} — lagatar {k} trade LOSS</b>\n"
+                    f"In {k} trade ka loss: ₹{g.pnl_rs.astype(float).sum():,.0f}\n"
+                    f"Backtest record: {BT_STREAK[strat]}\n"
+                    f"{'Ye backtest ki seema se upar hai — strategy rokne pe sochna chahiye.' if k > 6 and strat == 'MOM' or k > 4 and strat == 'PBS' else 'Ye backtest jaisa hi hai, par dhyan rakho.'}")
+    k = loss_streak(df)
+    if k >= STREAK_ALERT and k != loss_streak(df[df.strategy == strat]):
+        msgs.append(f"⚠️ <b>RELIANCE PAPER: dono strategy milake lagatar {k} trade LOSS</b>\n"
+                    f"Loss: ₹{df.tail(k).pnl_rs.astype(float).sum():,.0f}\nBacktest record: {BT_STREAK['ALL']}")
+    return msgs
 
 
 def _one(g):
@@ -273,6 +308,9 @@ def run(rel, nif, now, dry=False):
                f"Wajah: {p['reason']}\n"
                f"Result: ₹{p['pnl_rs']:+,.0f} ({p['ret_pct']:+.2f}%, charges ke baad)\n{totals_line(df)}", dry)
             write_status(df)
+            if p["pnl_rs"] < 0:
+                for m in streak_alerts(df, p["strategy"]):
+                    tg(m, dry)
             s["exit_sent"] = True
             changed = True
 

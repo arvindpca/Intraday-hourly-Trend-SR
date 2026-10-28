@@ -8,6 +8,8 @@ Strategies: 20-Min Momentum, VWAP Pullback Short
 | VWAP Pullback Short | 1 | 1 / 0 | **100%** | 52% (1 saal) / 46% (3 saal) | ₹+974 | ₹+974 / — | inf |
 | **TOTAL** | 4 | 1 / 3 | **25%** | — | ₹-901 | ₹+974 / ₹-625 | 0.52 |
 
+**Lagatar loss abhi:** 20-Min Momentum: 3 | VWAP Pullback Short: 0 | Total: 0  (alert 5 pe)
+
 _26 Oct ka MOM trade purane version (bina filter) ka tha._
 
 ### Last 20 trades

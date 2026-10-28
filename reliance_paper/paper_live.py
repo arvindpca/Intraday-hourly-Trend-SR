@@ -279,13 +279,38 @@ def run(rel, nif, now, dry=False):
           f"trades: {[(p['id'], p['status']) for p in trades]} | pending: {pending_signal(t)}")
 
     changed = False
+    # ---- EARLY SIGNAL: agli candle khulte hi entry hogi -> abhi alert bhejo (real trading ke liye)
+    syn = t.iloc[[-1]].copy()
+    syn.index = syn.index + pd.Timedelta(minutes=5)
+    px = float(t.close.iloc[-1])
+    syn[["open", "high", "low", "close"]] = px
+    syn["tod"] = syn.index.hour * 60 + syn.index.minute
+    syn[["signal"]] = 0
+    syn["fhigh"] = False
+    syn["pb_filter"] = False
+    real_ids = {p["id"] for p in trades}
+    for p in simulate_day(pd.concat([t, syn])):
+        if p["id"] in real_ids or pd.Timestamp(p["entry_time"]) != syn.index[0]:
+            continue
+        s = st["trades"].setdefault(p["id"], {})
+        if s.get("signal_sent"):
+            continue
+        tgt = (f"Target ≈ ₹{p['tp']} (2R, entry ke hisaab se badlega)" if p["strategy"] == "PBS"
+               else "Target: nahi — trailing SL")
+        tg(f"⏰ <b>RELIANCE SIGNAL — abhi {p['side']} karo</b>  [{NAMES[p['strategy']]}]\n"
+           f"{hhmm(syn.index[0])} candle khul rahi hai. Price ≈ ₹{px:.2f} × {p['qty']} shares\n"
+           f"Stop loss ≈ ₹{p['init_sl']:.2f}\n{tgt}\n"
+           f"(Paper entry {hhmm(syn.index[0])} candle ke open pe likhi jaayegi; candle band hone pe confirm msg aayega)", dry)
+        s["signal_sent"] = True
+        changed = True
+
     for p in trades:
         s = st["trades"].setdefault(p["id"], {})
         if not s.get("entry_sent"):
             risk = abs(p["entry"] - p["init_sl"])
             tgt = (f"Target: ₹{p['tp']} (2R)" if p["strategy"] == "PBS"
                    else f"Target: nahi — trailing SL (2×ATR = ₹{TRAIL_ATR * p['atr']:.2f})")
-            tg(f"<b>RELIANCE PAPER {side_txt(p['side'])}</b>  [{NAMES[p['strategy']]}]\n"
+            tg(f"<b>RELIANCE PAPER {side_txt(p['side'])} — entry confirm</b>  [{NAMES[p['strategy']]}]\n"
                f"Entry: ₹{p['entry']} ({hhmm(p['entry_time'])}) × {p['qty']} shares = ₹{p['entry'] * p['qty']:,.0f}\n"
                f"Stop loss: ₹{p['init_sl']} (risk ₹{risk * p['qty']:,.0f})\n{tgt}\n"
                f"Signal candle: {hhmm(p['signal_time'])}", dry)

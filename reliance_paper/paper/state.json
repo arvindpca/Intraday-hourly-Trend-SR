@@ -2,7 +2,9 @@
   "date": "2026-10-29",
   "trades": {
     "MOM-20261029-0935": {
-      "signal_sent": true
+      "signal_sent": true,
+      "entry_sent": true,
+      "last_sl": 1167.26
     }
   }
 }

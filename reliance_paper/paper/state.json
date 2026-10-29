@@ -4,7 +4,8 @@
     "MOM-20261029-0935": {
       "signal_sent": true,
       "entry_sent": true,
-      "last_sl": 1172.36
+      "last_sl": 1172.36,
+      "exit_sent": true
     }
   }
 }

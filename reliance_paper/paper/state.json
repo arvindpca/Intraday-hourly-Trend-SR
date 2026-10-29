@@ -1,21 +1,8 @@
 {
-  "date": "2026-10-28",
+  "date": "2026-10-29",
   "trades": {
-    "MOM-20261028-0945": {
-      "entry_sent": true,
-      "last_sl": 1190.83,
-      "exit_sent": true
-    },
-    "PBS-20261028-1055": {
-      "entry_sent": true,
-      "last_sl": 1184.65,
-      "exit_sent": true
-    },
-    "PBS-20261028-1400": {
-      "entry_sent": true,
-      "last_sl": 1171.71,
-      "exit_sent": true
+    "MOM-20261029-0935": {
+      "signal_sent": true
     }
-  },
-  "day_end_sent": true
+  }
 }

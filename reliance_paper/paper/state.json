@@ -4,7 +4,9 @@
     "PBS-20261030-1150": {
       "signal_sent": true,
       "entry_sent": true,
-      "last_sl": 1167.4
+      "last_sl": 1167.4,
+      "exit_sent": true
     }
-  }
+  },
+  "day_end_sent": true
 }

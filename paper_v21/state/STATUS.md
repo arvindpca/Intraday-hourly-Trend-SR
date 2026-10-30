@@ -1,8 +1,8 @@
 # Paper V2.1 (shant) - Live Status
 
-**Last update:** 29 Oct 2026 | **Started:** 2026-10-23 | Capital Rs 1,00,000 (Rs 20,000 × 5)
+**Last update:** 30 Oct 2026 | **Started:** 2026-10-23 | Capital Rs 1,00,000 (Rs 20,000 × 5)
 
-**Nifty:** 22,937 vs 50 EMA 23,164 → naya trade nahi
+**Nifty:** 23,053 vs 50 EMA 23,160 → naya trade nahi
 
 | Realized | Open P&L | Kul | Closed trades | Win |
 |---|---|---|---|---|

@@ -2,7 +2,9 @@
   "date": "2026-10-30",
   "trades": {
     "PBS-20261030-1150": {
-      "signal_sent": true
+      "signal_sent": true,
+      "entry_sent": true,
+      "last_sl": 1167.4
     }
   }
 }

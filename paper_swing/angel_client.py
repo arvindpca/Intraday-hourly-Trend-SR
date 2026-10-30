@@ -19,6 +19,11 @@ import pyotp
 from SmartApi import SmartConnect
 from dotenv import load_dotenv
 
+try:  # Angel login din me ek baar (session cache)
+    import angel_session_cache as _session_cache
+except Exception:  # cache na mile to bhi normal login chalega
+    _session_cache = None
+
 
 # ---------------------------------------------------------
 # Load environment variables
@@ -152,6 +157,8 @@ def login():
 
             _smart_api = smart_api
             _session_data = session_data
+            if _session_cache is not None:
+                _session_cache.save(smart_api)
 
             print(
                 "[angel_client] Logged in to Angel One "
@@ -225,6 +232,13 @@ def get_client() -> SmartConnect:
     """
 
     global _smart_api
+    global _session_data
+
+    if _smart_api is None and _session_cache is not None:
+        cached = _session_cache.load()
+        if cached is not None:
+            _smart_api = cached
+            _session_data = _session_cache.session_data(cached)
 
     if _smart_api is None:
         login()
@@ -254,7 +268,7 @@ def get_auth_token() -> str:
     """Return the JWT auth token from the active SmartAPI session."""
     global _session_data
     if _session_data is None:
-        login()
+        get_client()
     try:
         return str(_session_data["data"]["jwtToken"])
     except Exception as e:
